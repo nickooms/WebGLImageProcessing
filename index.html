@@ -37,9 +37,9 @@
         var r1 = 204;
         var g1 = 204;
         var b1 = 204;
-        var r2 = 0;
-        var g2 = 0;
-        var b2 = 255;
+        var r2 = 183;
+        var g2 = 183;
+        var b2 = 183;
         gl.bufferData(
           gl.ARRAY_BUFFER,
           /*new Uint8Array(   // Uint8Array
@@ -77,9 +77,9 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         program.uColorLocation1 = gl.getUniformLocation(program, 'u_color1');
-        gl.uniform4f(program.uColorLocation1, 204/255, 204/255, 204/255, 1);
+        gl.uniform4f(program.uColorLocation1, r1 / 255, g1 / 255, b1 / 255, 1);
         program.uColorLocation2 = gl.getUniformLocation(program, 'u_color2');
-        gl.uniform4f(program.uColorLocation2, 183/255, 183/255, 183/255, 1);
+        gl.uniform4f(program.uColorLocation2, r2 / 255, g2 / 255, b2 / 255, 1);
         program.resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
         gl.uniform2f(program.resolutionLocation, canvas.width, canvas.height);
         var buffer = gl.createBuffer();
