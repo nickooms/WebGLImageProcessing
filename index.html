@@ -15,7 +15,7 @@
           render(image);
         }
       }
-      var gl, program, positionLocation, texCoordLocation, colorLocation, texture, image;
+      var gl, program, /*positionLocation, texCoordLocation, colorLocation,*/ texture, image;
       function render(image) {
         var d1 = new Date().getTime();
         var canvas = document.getElementById('canvas');
@@ -27,13 +27,13 @@
         }
         program = createProgramFromScripts(gl, ['2d-vertex-shader', '2d-fragment-shader']);
         gl.useProgram(program);
-        positionLocation = gl.getAttribLocation(program, 'a_position');
-        texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
-        colorLocation = gl.getAttribLocation(program, 'a_color');
+        program.positionLocation = gl.getAttribLocation(program, 'a_position');
+        program.texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
+        program.colorLocation = gl.getAttribLocation(program, 'a_color');
         var colorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.enableVertexAttribArray(colorLocation);
-        gl.vertexAttribPointer(colorLocation, 4, /*gl.UNSIGNED_BYTE*/gl.FLOAT, /*true*/false, 0, 0);
+        gl.enableVertexAttribArray(program.colorLocation);
+        gl.vertexAttribPointer(program.colorLocation, 4, /*gl.UNSIGNED_BYTE*/gl.FLOAT, /*true*/false, 0, 0);
         var r1 = 204;
         var g1 = 204;
         var b1 = 204;
@@ -67,8 +67,8 @@
             0.0,  1.0,
             1.0,  0.0,
             1.0,  1.0]), gl.STATIC_DRAW);
-        gl.enableVertexAttribArray(texCoordLocation);
-        gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(program.texCoordLocation);
+        gl.vertexAttribPointer(program.texCoordLocation, 2, gl.FLOAT, false, 0, 0);
         texture = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -76,20 +76,21 @@
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        var uColorLocation1 = gl.getUniformLocation(program, 'u_color1');
-        gl.uniform4f(uColorLocation1, 204/255, 204/255, 204/255, 1);
-        var uColorLocation2 = gl.getUniformLocation(program, 'u_color2');
-        gl.uniform4f(uColorLocation2, 183/255, 183/255, 183/255, 1);
-        var resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
-        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        program.uColorLocation1 = gl.getUniformLocation(program, 'u_color1');
+        gl.uniform4f(program.uColorLocation1, 204/255, 204/255, 204/255, 1);
+        program.uColorLocation2 = gl.getUniformLocation(program, 'u_color2');
+        gl.uniform4f(program.uColorLocation2, 183/255, 183/255, 183/255, 1);
+        program.resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+        gl.uniform2f(program.resolutionLocation, canvas.width, canvas.height);
         var buffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(program.positionLocation);
+        gl.vertexAttribPointer(program.positionLocation, 2, gl.FLOAT, false, 0, 0);
         setRectangle(gl, 0, 0, image.width, image.height);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         //console.log(gl.getUniform(program, uColorLocation1));
         //console.log(gl.getUniform(program, uColorLocation2));
+        document.title = new Date().getTime() - d1 + ' ms';
         console.log(new Date().getTime() - d1);
       }
 
@@ -129,7 +130,7 @@
       uniform sampler2D u_image;
       uniform vec4 u_color1;
       uniform vec4 u_color2;
-      //uniform vec4 u_colorReturn;
+      
       varying vec2 v_texCoord;
       varying vec4 v_color;
       bool cl(vec4 c1, vec4 c2) {
