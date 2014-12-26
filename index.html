@@ -10,12 +10,12 @@
 
       function main() {
         image = new Image();
-        image.src = 'wbn.png';
+        image.src = 'wbn wgo.png';
         image.onload = function() {
           render(image);
         }
       }
-      var gl, program, /*positionLocation, texCoordLocation, colorLocation,*/ texture, image;
+      var gl, program, texture, image;
       function render(image) {
         var d1 = new Date().getTime();
         var canvas = document.getElementById('canvas');
@@ -127,6 +127,7 @@
     </script>
     <script id="2d-fragment-shader" type="x-shader/x-fragment">
       precision mediump float;
+
       uniform sampler2D u_image;
       uniform vec4 u_color1;
       uniform vec4 u_color2;
